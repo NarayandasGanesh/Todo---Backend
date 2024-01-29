@@ -56,10 +56,32 @@ const editTasks = async (req, res) => {
       res.status(404).send({ Message: "Failed" });
     }
   };
+  const updatedTask =  async (req, res) => {
+    const taskId = req.params.taskId;
+    const { completed } = req.body;
+  
+    try {
+      const updatedTask = await TaskModel.findByIdAndUpdate(
+        taskId,
+        { completed },
+        { new: true }
+      );
+  
+      if (!updatedTask) {
+        return res.status(404).json({ error: 'Task not found' });
+      }
+  
+      res.json(updatedTask);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
 
 module.exports = {
     getAllTasks,
     addTasks,
     editTasks,
-    deleteTasks
+    deleteTasks,
+    updatedTask
 }
